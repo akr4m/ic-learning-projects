@@ -19,7 +19,16 @@
 
     <title>@yield('title', 'Task Manager') - টাস্ক ম্যানেজার</title>
 
-    {{-- Minimal Internal CSS - কোনো external library নেই --}}
+    {{--
+        Google Fonts - Noto Sans Bengali
+        বাংলা টেক্সট সুন্দরভাবে দেখানোর জন্য এই font ব্যবহার করা হচ্ছে।
+        preconnect দিয়ে faster loading নিশ্চিত করা হচ্ছে।
+    --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- Minimal Internal CSS --}}
     <style>
         /* CSS Reset ও Base Styles */
         *, *::before, *::after {
@@ -29,7 +38,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
             background-color: #f5f5f5;
@@ -128,6 +137,7 @@
             border: 1px solid transparent;
             border-radius: 4px;
             font-size: 0.875rem;
+            font-family: inherit; /* Parent এর font inherit করবে (Noto Sans Bengali) */
             text-decoration: none;
             cursor: pointer;
             transition: background 0.2s;
@@ -183,6 +193,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
+            font-family: inherit; /* Parent এর font inherit করবে (Noto Sans Bengali) */
         }
 
         .form-control:focus {
