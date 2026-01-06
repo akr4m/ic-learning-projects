@@ -1,59 +1,265 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel শিক্ষামূলক প্রজেক্ট: Role-Based Blog
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+এই প্রজেক্টটা আমি আমার স্টুডেন্টদের Laravel শেখানোর জন্য বানিয়েছি। এখানে চেষ্টা করেছি Laravel এর core concepts গুলো একটা real-world example এর মাধ্যমে দেখাতে। কোড যতটা সম্ভব simple রাখার চেষ্টা করেছি যাতে নতুনরা সহজে বুঝতে পারে।
 
-## About Laravel
+## কি আছে এই প্রজেক্টে?
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+একটা simple blog application যেখানে দুই ধরনের user আছে:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Author** - এরা blog post লিখতে পারে। তবে সরাসরি publish করতে পারে না। Post লেখা শেষ হলে Editor এর কাছে approval এর জন্য পাঠাতে হয়।
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Editor** - এরা Author দের লেখা post গুলো review করে approve অথবা reject করতে পারে। Approve হলে post publish হয়ে যায়, সবাই দেখতে পায়।
 
-## Learning Laravel
+এই workflow টা অনেক real company তে follow করা হয়। তাই শেখার জন্য ভালো example।
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## যা যা শিখতে পারবে
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- MVC pattern কিভাবে কাজ করে
+- Routing (web routes + API routes)
+- Controller লেখা (Resource Controller pattern)
+- Eloquent Model আর Relationships
+- Database Migration
+- Policy দিয়ে Authorization
+- Middleware
+- Laravel Sanctum দিয়ে API Authentication
+- Blade Template আর Components
+- TailwindCSS integration
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Step 1: Clone করো
 
-### Premium Partners
+```bash
+git clone <repository-url>
+cd project-folder
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Step 2: PHP Dependencies install করো
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Step 3: Environment setup
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Step 4: Database setup
 
-## Security Vulnerabilities
+প্রজেক্টে SQLite ব্যবহার করা হয়েছে, তাই আলাদা করে MySQL/PostgreSQL setup করার দরকার নেই।
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+touch database/database.sqlite
+```
 
-## License
+অথবা Windows এ:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+type nul > database/database.sqlite
+```
+
+### Step 5: Migration আর Demo Data
+
+```bash
+php artisan migrate --seed
+```
+
+এটা চালালে database তৈরি হয়ে যাবে আর কিছু demo user ও post তৈরি হবে।
+
+### Step 6: Frontend Assets
+
+```bash
+pnpm install
+pnpm run build
+```
+
+যদি pnpm না থাকে, npm দিয়েও করতে পারো:
+
+```bash
+npm install
+npm run build
+```
+
+### Step 7: Server চালাও
+
+```bash
+php artisan serve
+```
+
+Browser এ যাও: <http://localhost:8000>
+
+## Demo Login
+
+তিনটা demo user তৈরি করা আছে। সবার password: `password`
+
+| Email | Role | কি করতে পারবে |
+|-------|------|---------------|
+| <author@example.com> | Author | Post লেখা, Edit করা, Submit করা |
+| <editor@example.com> | Editor | Post Approve/Reject করা |
+| <fatema@example.com> | Author | Post লেখা, Edit করা, Submit করা |
+
+## Project Structure বুঝি
+
+```
+app/
+├── Http/Controllers/
+│   ├── PostController.php      → Post CRUD (Create, Read, Update, Delete)
+│   ├── DashboardController.php → User Dashboard
+│   ├── EditorController.php    → Approval/Rejection handle করে
+│   └── Api/PostController.php  → API endpoints
+│
+├── Models/
+│   ├── User.php                → User model, role management
+│   └── Post.php                → Post model, status management
+│
+└── Policies/
+    └── PostPolicy.php          → কে কি করতে পারবে সেটার rules
+
+database/
+├── migrations/                 → Database table structure
+├── factories/                  → Test data generate করার জন্য
+└── seeders/                    → Demo data
+
+resources/views/
+├── layouts/                    → Main layout files
+├── posts/                      → Post related views
+├── editor/                     → Editor views
+└── dashboard.blade.php         → Dashboard
+
+routes/
+├── web.php                     → Web routes
+└── api.php                     → API routes
+```
+
+## Post এর Lifecycle
+
+একটা post এর জীবনচক্র এরকম:
+
+```
+Draft → Pending → Published
+                ↘ Rejected → (Edit করে আবার) → Pending
+```
+
+1. **Draft**: Author post লিখছে, এখনো submit করেনি
+2. **Pending**: Author submit করেছে, Editor এর approval এর অপেক্ষায়
+3. **Published**: Editor approve করেছে, সবাই দেখতে পাচ্ছে
+4. **Rejected**: Editor reject করেছে। Author edit করে আবার submit করতে পারবে।
+
+## Code পড়ার Tips
+
+### ১. Model দেখো আগে
+
+`app/Models/Post.php` আর `app/Models/User.php` দিয়ে শুরু করো। এখানে দেখবে:
+
+- Relationships কিভাবে define করা হয়
+- Helper methods কিভাবে লেখা হয় (`isAuthor()`, `isPublished()` ইত্যাদি)
+- Query Scopes কি জিনিস (`scopePublished`, `scopePending`)
+
+### ২. Migration দেখো
+
+`database/migrations/` folder এ দেখো কিভাবে database table design করা হয়েছে।
+
+### ৩. Policy বুঝো
+
+`app/Policies/PostPolicy.php` - এটা important। কোন user কোন action নিতে পারবে সেটা এখানে define করা। Laravel এর authorization system বুঝতে এই file ভালো করে পড়ো।
+
+### ৪. Routes দেখো
+
+`routes/web.php` দেখো route কিভাবে organize করা হয়েছে। একটা জিনিস মনে রাখবে - **route order matters!** Static routes (`/posts/create`) অবশ্যই dynamic routes (`/posts/{post}`) এর আগে থাকতে হবে।
+
+### ৫. Controller দেখো
+
+`app/Http/Controllers/PostController.php` - Resource Controller এর example। CRUD operations কিভাবে handle করা হয় দেখো।
+
+## API ব্যবহার
+
+Sanctum দিয়ে API authentication করা হয়েছে। Postman বা অন্য কোনো API client দিয়ে test করতে পারো।
+
+### Login করে Token নাও
+
+```
+POST /api/login
+Body: {
+    "email": "author@example.com",
+    "password": "password"
+}
+```
+
+Response এ একটা token পাবে।
+
+### Token দিয়ে Request করো
+
+```
+GET /api/posts
+Headers: {
+    "Authorization": "Bearer <token>"
+}
+```
+
+### API Endpoints
+
+| Method | URL | কি করে |
+|--------|-----|--------|
+| POST | /api/login | Login, token দেয় |
+| GET | /api/posts | Published posts list |
+| POST | /api/posts | নতুন post create |
+| GET | /api/posts/{id} | Single post দেখা |
+| PUT | /api/posts/{id} | Post update |
+| POST | /api/posts/{id}/submit | Approval এ পাঠানো |
+| POST | /api/posts/{id}/approve | Approve করা (Editor) |
+| POST | /api/posts/{id}/reject | Reject করা (Editor) |
+
+## কিছু গুরুত্বপূর্ণ বিষয়
+
+### Route Model Binding
+
+Controller method এ `Post $post` লিখলে Laravel automatically URL থেকে post ID নিয়ে database থেকে Post model find করে দেয়। Manual ভাবে `Post::find($id)` করার দরকার নেই।
+
+```php
+// PostController.php
+public function show(Post $post)  // Laravel নিজেই Post find করে দিবে
+{
+    return view('posts.show', compact('post'));
+}
+```
+
+### Gate/Policy Authorization
+
+Controller এ `Gate::authorize()` call করলে সেটা Policy check করে। Permission না থাকলে automatically 403 error দেয়।
+
+```php
+Gate::authorize('update', $post);  // PostPolicy এর update() method check করবে
+```
+
+### Blade এ Authorization Check
+
+```blade
+@can('update', $post)
+    <a href="{{ route('posts.edit', $post) }}">Edit</a>
+@endcan
+```
+
+## Development Commands
+
+```bash
+# Server চালানো
+php artisan serve
+
+# Migration fresh করা (সব মুছে আবার তৈরি)
+php artisan migrate:fresh --seed
+
+# Route list দেখা
+php artisan route:list
+
+# Cache clear করা
+php artisan cache:clear
+php artisan route:clear
+php artisan config:clear
+```
+
+## শেষ কথা
+
+এই প্রজেক্টটা production ready না। এটা শুধুমাত্র শেখার জন্য। Real project এ আরো অনেক কিছু add করতে হবে - proper validation, error handling, testing, ইত্যাদি।
