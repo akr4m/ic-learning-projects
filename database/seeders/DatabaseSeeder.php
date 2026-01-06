@@ -6,20 +6,30 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Database Seeder
+ *
+ * এটি main seeder যা অন্যান্য seeder-কে call করে।
+ * php artisan db:seed command দিলে এটি run হয়।
+ */
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Database-এ demo data যোগ করা
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Test user তৈরি
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        // Recipe seeder call করা
+        $this->call([
+            RecipeSeeder::class,
         ]);
     }
 }
