@@ -1,27 +1,17 @@
-# Laravel শেখার প্রজেক্ট: Role-Based Blog
+# রেসিপি শেয়ারিং প্ল্যাটফর্ম
 
-এই প্রজেক্টটা বানিয়েছি আমার স্টুডেন্টদের Laravel শেখানোর জন্য। চেষ্টা করেছি সিম্পল রাখতে যাতে সবাই বুঝতে পারে। এটা production-ready কোড না, শুধুই শেখার জন্য।
-
-## প্রজেক্টে কি আছে?
-
-একটা ব্লগ অ্যাপ। তিন টাইপের ইউজার:
-
-**Author** - পোস্ট লিখতে পারে। সরাসরি পাবলিশ হয় না, Editor-এর অ্যাপ্রুভাল লাগে।
-
-**Editor** - পোস্ট রিভিউ করে অ্যাপ্রুভ বা রিজেক্ট করে।
-
-**Admin** - সব পারে। ইউজারদের role-ও চেঞ্জ করতে পারে।
+স্টুডেন্টদের Laravel শেখানোর জন্য এই প্রজেক্টটা বানিয়েছি। একদম বেসিক - রেসিপি add করা যায়, edit করা যায়, delete করা যায়। সাথে ছবি upload আর search-ও আছে।
 
 ## কি কি শিখবে?
 
-- MVC pattern
+- MVC কিভাবে কাজ করে
 - Routing
 - Controller
-- Eloquent Model ও Relationships
-- Migration
-- Policy দিয়ে Authorization
-- Middleware
-- Sanctum API Auth
+- Eloquent ORM
+- Model Relationships (one-to-many)
+- Query Builder দিয়ে search/filter
+- Form handling ও Validation
+- File Upload (ছবি)
 - Blade Template
 - TailwindCSS
 
@@ -36,7 +26,7 @@ git clone <repository-url>
 cd project-folder
 ```
 
-### ২. Composer
+### ২. Dependencies
 
 ```bash
 composer install
@@ -51,13 +41,13 @@ php artisan key:generate
 
 ### ৪. Database
 
-SQLite ব্যবহার করেছি।
+SQLite ব্যবহার করেছি, আলাদা করে MySQL লাগবে না।
 
 ```bash
 touch database/database.sqlite
 ```
 
-Windows:
+Windows এ:
 
 ```bash
 type nul > database/database.sqlite
@@ -69,13 +59,22 @@ type nul > database/database.sqlite
 php artisan migrate --seed
 ```
 
-### ৬. Frontend
+### ৬. Storage Link
+
+ছবি দেখানোর জন্য এটা দরকার:
 
 ```bash
-npm install && npm run build
+php artisan storage:link
 ```
 
-### ৭. Server
+### ৭. Frontend
+
+```bash
+npm install
+npm run build
+```
+
+### ৮. Server
 
 ```bash
 php artisan serve
@@ -85,25 +84,13 @@ Browser: <http://localhost:8000>
 
 ---
 
-## Demo Users
+## ফিচার
 
-Password সবার: `password`
-
-| Email | Role |
-|-------|------|
-| <admin@example.com> | Admin |
-| <editor@example.com> | Editor |
-| <author@example.com> | Author |
-| <fatema@example.com> | Author |
-
----
-
-## Post Lifecycle
-
-```
-Draft → Pending → Published
-              ↘ Rejected
-```
+- রেসিপি তৈরি, দেখা, এডিট, ডিলিট (CRUD)
+- প্রতিটা রেসিপিতে একাধিক উপকরণ (ingredients) যোগ করা যায়
+- রেসিপির ছবি আপলোড
+- রেসিপি সার্চ (নাম বা বর্ণনা দিয়ে)
+- উপকরণ দিয়ে ফিল্টার
 
 ---
 
@@ -113,59 +100,168 @@ Draft → Pending → Published
 project-folder/
 ├── app/
 │   ├── Http/Controllers/
-│   │   ├── PostController.php
-│   │   ├── EditorController.php
-│   │   └── Api/PostController.php
-│   ├── Models/
-│   │   ├── User.php
-│   │   └── Post.php
-│   └── Policies/
-│       └── PostPolicy.php
+│   │   └── RecipeController.php   # CRUD + Search
+│   └── Models/
+│       ├── Recipe.php             # রেসিপি মডেল
+│       └── Ingredient.php         # উপকরণ মডেল
+│
 ├── database/migrations/
+│   ├── create_recipes_table.php
+│   └── create_ingredients_table.php
+│
 ├── resources/views/
+│   ├── layouts/
+│   │   └── app.blade.php          # মেইন লেআউট
+│   └── recipes/
+│       ├── index.blade.php        # রেসিপি লিস্ট
+│       ├── create.blade.php       # নতুন রেসিপি ফর্ম
+│       ├── edit.blade.php         # এডিট ফর্ম
+│       └── show.blade.php         # রেসিপি ডিটেইলস
+│
 └── routes/
-    ├── web.php
-    └── api.php
+    └── web.php                    # সব routes
 ```
 
 ---
 
-## কোড পড়ার টিপস
+## Database Structure
 
-১. **Model আগে** - `Post.php`, `User.php` দেখো
-২. **Migration** - টেবিল ডিজাইন
-৩. **Policy** - Authorization rules
-৪. **Routes** - order matters! `/posts/create` আগে, `/posts/{post}` পরে
-৫. **Controller** - CRUD operations
+### recipes টেবিল
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | bigint | Primary Key |
+| title | string | রেসিপির নাম |
+| description | text | বিস্তারিত |
+| image | string | ছবির path |
+| timestamps | | created_at, updated_at |
+
+### ingredients টেবিল
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | bigint | Primary Key |
+| recipe_id | foreign | কোন রেসিপির |
+| name | string | উপকরণের নাম |
+| quantity | string | পরিমাণ |
+| timestamps | | created_at, updated_at |
 
 ---
 
-## API
+## Relationship
 
-### Login
+একটা Recipe তে অনেক Ingredient থাকতে পারে (One-to-Many):
 
+```php
+// Recipe.php
+public function ingredients()
+{
+    return $this->hasMany(Ingredient::class);
+}
+
+// Ingredient.php
+public function recipe()
+{
+    return $this->belongsTo(Recipe::class);
+}
 ```
-POST /api/login
-{"email": "author@example.com", "password": "password"}
+
+---
+
+## Routes
+
+`Route::resource()` দিয়ে একবারে ৭টা route বানানো হয়েছে:
+
+| Method | URL | Controller Method | কাজ |
+|--------|-----|-------------------|-----|
+| GET | /recipes | index() | সব রেসিপি দেখানো |
+| GET | /recipes/create | create() | নতুন রেসিপি ফর্ম |
+| POST | /recipes | store() | রেসিপি সেভ |
+| GET | /recipes/{id} | show() | একটা রেসিপি দেখানো |
+| GET | /recipes/{id}/edit | edit() | এডিট ফর্ম |
+| PUT | /recipes/{id} | update() | আপডেট করা |
+| DELETE | /recipes/{id} | destroy() | ডিলিট করা |
+
+---
+
+## কোড বুঝতে যা যা দেখবে
+
+### ১. Model দেখো আগে
+
+`app/Models/Recipe.php` - দেখো কিভাবে `$fillable` দিয়ে mass assignment protection করা হয়েছে, আর `hasMany()` দিয়ে relationship।
+
+### ২. Migration
+
+`database/migrations/` - টেবিল কিভাবে ডিজাইন করা হয়েছে দেখো। `foreignId()` দিয়ে কিভাবে relation বানানো হয়।
+
+### ৩. Controller
+
+`RecipeController.php` - এখানে সব আছে:
+
+- Validation কিভাবে করে
+- File upload কিভাবে handle করে
+- Query Builder দিয়ে search
+- `whereHas()` দিয়ে related table এ search
+
+### ৪. Views
+
+`resources/views/recipes/` - Blade template গুলো দেখো:
+
+- `@extends` দিয়ে layout inherit
+- `@section` দিয়ে content
+- `@foreach` দিয়ে loop
+- `@if` দিয়ে condition
+- `@error` দিয়ে validation error দেখানো
+
+---
+
+## কিছু জিনিস মনে রাখবে
+
+### Route Model Binding
+
+Controller এ `Recipe $recipe` লিখলে Laravel নিজে থেকে database থেকে খুঁজে দেয়:
+
+```php
+public function show(Recipe $recipe)
+{
+    // $recipe তে automatically data চলে আসে
+    return view('recipes.show', compact('recipe'));
+}
 ```
 
-### Endpoints
+### Eager Loading
 
-| Method | URL | কাজ |
-|--------|-----|-----|
-| GET | /api/posts | Posts |
-| POST | /api/posts | Create |
-| POST | /api/posts/{id}/submit | Submit |
-| POST | /api/posts/{id}/approve | Approve |
+N+1 query problem এড়াতে `load()` বা `with()` ব্যবহার করো:
+
+```php
+$recipe->load('ingredients');
+```
+
+### File Upload
+
+```php
+$path = $request->file('image')->store('recipes', 'public');
+```
+
+এতে `storage/app/public/recipes/` folder এ ছবি save হয়।
 
 ---
 
 ## Commands
 
 ```bash
+# সার্ভার চালানো
 php artisan serve
+
+# ডাটাবেস রিফ্রেশ
 php artisan migrate:fresh --seed
+
+# Route লিস্ট
 php artisan route:list
 ```
 
 ---
+
+## Demo Data
+
+`php artisan db:seed` দিলে কিছু বাংলা রেসিপি automatically ঢুকে যাবে - পায়েস, বিরিয়ানি, ভর্তা, পিঠা, শিঙ্গাড়া।
