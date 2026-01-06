@@ -12,12 +12,17 @@ use Laravel\Sanctum\HasApiTokens;
  * User Model
  *
  * এই model authenticated users এর তথ্য manage করে।
- * প্রতিটি user এর একটি role আছে: 'author' অথবা 'editor'
+ * প্রতিটি user এর একটি role আছে: 'author', 'editor', অথবা 'admin'
+ *
+ * Role Hierarchy:
+ * - admin: সব কিছু করতে পারে, user roles manage করতে পারে
+ * - editor: posts approve/reject করতে পারে
+ * - author: posts লিখতে পারে
  *
  * @property int $id
  * @property string $name
  * @property string $email
- * @property string $role - 'author' বা 'editor'
+ * @property string $role - 'author', 'editor', বা 'admin'
  * @property string $password
  */
 class User extends Authenticatable
@@ -81,12 +86,12 @@ class User extends Authenticatable
     */
 
     /**
-     * User কি Author?
-     * Author রা blog post লিখতে পারে
+     * User কি Admin?
+     * Admin রা user roles manage করতে পারে
      */
-    public function isAuthor(): bool
+    public function isAdmin(): bool
     {
-        return $this->role === 'author';
+        return $this->role === 'admin';
     }
 
     /**
@@ -96,5 +101,36 @@ class User extends Authenticatable
     public function isEditor(): bool
     {
         return $this->role === 'editor';
+    }
+
+    /**
+     * User কি Author?
+     * Author রা blog post লিখতে পারে
+     */
+    public function isAuthor(): bool
+    {
+        return $this->role === 'author';
+    }
+
+    /**
+     * User কি Editor বা তার উপরের role?
+     * Editor এবং Admin উভয়েই posts approve করতে পারে
+     */
+    public function canManagePosts(): bool
+    {
+        return $this->isEditor() || $this->isAdmin();
+    }
+
+    /**
+     * Role এর বাংলা নাম return করে
+     */
+    public function getRoleNameAttribute(): string
+    {
+        return match($this->role) {
+            'admin' => 'অ্যাডমিন',
+            'editor' => 'এডিটর',
+            'author' => 'লেখক',
+            default => $this->role,
+        };
     }
 }

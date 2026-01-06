@@ -64,6 +64,17 @@ class UserFactory extends Factory
     }
 
     /**
+     * Admin state - Admin role দিয়ে user create করে
+     * Usage: User::factory()->admin()->create()
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ]);
+    }
+
+    /**
      * Unverified state - Email unverified user
      */
     public function unverified(): static

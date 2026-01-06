@@ -47,6 +47,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'editor@example.com',
         ]);
 
+        // Admin User - সব manage করার জন্য
+        $admin = User::factory()->admin()->create([
+            'name' => 'করিম (Admin)',
+            'email' => 'admin@example.com',
+        ]);
+
         // Extra Author
         $author2 = User::factory()->author()->create([
             'name' => 'ফাতেমা (Author)',
@@ -208,8 +214,9 @@ Blade এ:
         $this->command->info('Demo data created successfully!');
         $this->command->info('');
         $this->command->info('Demo Users:');
-        $this->command->info('  Author: author@example.com (password: password)');
+        $this->command->info('  Admin:  admin@example.com (password: password)');
         $this->command->info('  Editor: editor@example.com (password: password)');
+        $this->command->info('  Author: author@example.com (password: password)');
         $this->command->info('  Author: fatema@example.com (password: password)');
     }
 }

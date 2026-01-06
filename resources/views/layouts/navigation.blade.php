@@ -44,8 +44,8 @@
                             নতুন পোস্ট
                         </x-nav-link>
 
-                        <!-- Editor Only: Pending Posts -->
-                        @if(auth()->user()->isEditor())
+                        <!-- Editor/Admin Only: Pending Posts -->
+                        @if(auth()->user()->canManagePosts())
                             <x-nav-link :href="route('editor.pending')" :active="request()->routeIs('editor.pending')">
                                 অনুমোদন
                                 @php
@@ -56,6 +56,13 @@
                                         {{ $pendingCount }}
                                     </span>
                                 @endif
+                            </x-nav-link>
+                        @endif
+
+                        <!-- Admin Only: User Management -->
+                        @if(auth()->user()->isAdmin())
+                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                                ইউজার
                             </x-nav-link>
                         @endif
                     @endauth
@@ -70,8 +77,9 @@
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                 <div>{{ Auth::user()->name }}</div>
-                                <span class="ml-2 text-xs px-2 py-0.5 rounded-full {{ Auth::user()->isEditor() ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
-                                    {{ Auth::user()->isEditor() ? 'Editor' : 'Author' }}
+                                <span class="ml-2 text-xs px-2 py-0.5 rounded-full
+                                    {{ Auth::user()->isAdmin() ? 'bg-red-100 text-red-700' : (Auth::user()->isEditor() ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700') }}">
+                                    {{ Auth::user()->role_name }}
                                 </span>
 
                                 <div class="ms-1">
@@ -142,9 +150,15 @@
                     নতুন পোস্ট
                 </x-responsive-nav-link>
 
-                @if(auth()->user()->isEditor())
+                @if(auth()->user()->canManagePosts())
                     <x-responsive-nav-link :href="route('editor.pending')" :active="request()->routeIs('editor.pending')">
                         অনুমোদন
+                    </x-responsive-nav-link>
+                @endif
+
+                @if(auth()->user()->isAdmin())
+                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                        ইউজার
                     </x-responsive-nav-link>
                 @endif
             @endauth
@@ -156,8 +170,9 @@
                 <div class="px-4">
                     <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                    <span class="text-xs px-2 py-0.5 rounded-full {{ Auth::user()->isEditor() ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
-                        {{ Auth::user()->isEditor() ? 'Editor' : 'Author' }}
+                    <span class="text-xs px-2 py-0.5 rounded-full
+                        {{ Auth::user()->isAdmin() ? 'bg-red-100 text-red-700' : (Auth::user()->isEditor() ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700') }}">
+                        {{ Auth::user()->role_name }}
                     </span>
                 </div>
 

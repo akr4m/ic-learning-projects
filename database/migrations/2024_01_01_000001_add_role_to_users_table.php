@@ -4,8 +4,13 @@
  * Migration: Add role column to users table
  *
  * এই migration users টেবিলে role কলাম যোগ করে।
- * Role দুই ধরনের: 'author' এবং 'editor'
+ * Role তিন ধরনের: 'author', 'editor', এবং 'admin'
  * Default role হলো 'author'
+ *
+ * Role Hierarchy:
+ * - admin: সব কিছু করতে পারে, user roles manage করতে পারে
+ * - editor: posts approve/reject করতে পারে
+ * - author: posts লিখতে পারে
  */
 
 use Illuminate\Database\Migrations\Migration;
@@ -22,7 +27,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // role কলাম - enum type ব্যবহার করা হয়েছে
             // 'author' হলো default value
-            $table->enum('role', ['author', 'editor'])->default('author')->after('email');
+            $table->enum('role', ['author', 'editor', 'admin'])->default('author')->after('email');
         });
     }
 

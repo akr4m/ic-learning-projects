@@ -18,6 +18,7 @@
  * @see https://laravel.com/docs/routing
  */
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\PostController;
@@ -97,6 +98,19 @@ Route::middleware('auth')->group(function () {
 
     // Reject post (Editor only)
     Route::post('/posts/{post}/reject', [EditorController::class, 'reject'])->name('posts.reject');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes
+    |--------------------------------------------------------------------------
+    | শুধু Admin role এর users এই routes access করতে পারবে।
+    | User role management এর জন্য।
+    */
+
+    // User Management (Admin only)
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
 });
 
 /*

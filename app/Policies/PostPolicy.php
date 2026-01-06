@@ -14,6 +14,7 @@ use App\Models\User;
  * Role-based permissions:
  * - Author: নিজের post create, view, edit করতে পারবে (শুধু draft/rejected status এ)
  * - Editor: সব pending post দেখতে পারবে, approve/reject করতে পারবে
+ * - Admin: সব কিছু করতে পারবে, Editor এর সব permission আছে
  *
  * @see https://laravel.com/docs/authorization#creating-policies
  */
@@ -51,8 +52,8 @@ class PostPolicy
             return true;
         }
 
-        // Editor সব post দেখতে পারবে
-        return $user->isEditor();
+        // Editor এবং Admin সব post দেখতে পারবে
+        return $user->canManagePosts();
     }
 
     /**
@@ -121,12 +122,12 @@ class PostPolicy
 
     /**
      * Post approve করতে পারবে কি না (pending -> published)
-     * শুধু Editor pending posts approve করতে পারবে
+     * Editor এবং Admin pending posts approve করতে পারবে
      */
     public function approve(User $user, Post $post): bool
     {
-        // শুধু Editor approve করতে পারবে
-        if (!$user->isEditor()) {
+        // শুধু Editor এবং Admin approve করতে পারবে
+        if (!$user->canManagePosts()) {
             return false;
         }
 
@@ -136,12 +137,12 @@ class PostPolicy
 
     /**
      * Post reject করতে পারবে কি না (pending -> rejected)
-     * শুধু Editor pending posts reject করতে পারবে
+     * Editor এবং Admin pending posts reject করতে পারবে
      */
     public function reject(User $user, Post $post): bool
     {
-        // শুধু Editor reject করতে পারবে
-        if (!$user->isEditor()) {
+        // শুধু Editor এবং Admin reject করতে পারবে
+        if (!$user->canManagePosts()) {
             return false;
         }
 
@@ -151,10 +152,10 @@ class PostPolicy
 
     /**
      * Pending posts list দেখতে পারবে কি না
-     * শুধু Editor pending posts এর list দেখতে পারবে
+     * Editor এবং Admin pending posts এর list দেখতে পারবে
      */
     public function viewPending(User $user): bool
     {
-        return $user->isEditor();
+        return $user->canManagePosts();
     }
 }

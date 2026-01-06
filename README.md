@@ -4,11 +4,13 @@
 
 ## কি আছে এই প্রজেক্টে?
 
-একটা simple blog application যেখানে দুই ধরনের user আছে:
+একটা simple blog application যেখানে তিন ধরনের user আছে:
 
 **Author** - এরা blog post লিখতে পারে। তবে সরাসরি publish করতে পারে না। Post লেখা শেষ হলে Editor এর কাছে approval এর জন্য পাঠাতে হয়।
 
 **Editor** - এরা Author দের লেখা post গুলো review করে approve অথবা reject করতে পারে। Approve হলে post publish হয়ে যায়, সবাই দেখতে পায়।
+
+**Admin** - এদের সব ক্ষমতা আছে। Editor যা যা করতে পারে সব করতে পারে, আর সাথে user দের role change করতে পারে।
 
 এই workflow টা অনেক real company তে follow করা হয়। তাই শেখার জন্য ভালো example।
 
@@ -93,12 +95,13 @@ Browser এ যাও: <http://localhost:8000>
 
 ## Demo Login
 
-তিনটা demo user তৈরি করা আছে। সবার password: `password`
+চারটা demo user তৈরি করা আছে। সবার password: `password`
 
 | Email | Role | কি করতে পারবে |
 |-------|------|---------------|
-| <author@example.com> | Author | Post লেখা, Edit করা, Submit করা |
+| <admin@example.com> | Admin | সব কিছু + User Role Management |
 | <editor@example.com> | Editor | Post Approve/Reject করা |
+| <author@example.com> | Author | Post লেখা, Edit করা, Submit করা |
 | <fatema@example.com> | Author | Post লেখা, Edit করা, Submit করা |
 
 ## Project Structure বুঝি
